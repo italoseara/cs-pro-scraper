@@ -16,13 +16,13 @@ def main() -> None:
 
         FBScraper(username=os.getenv("FB_USERNAME")),
         
-        # XScraper(username=os.getenv("X_USERNAME"),
-        #          auth_token=os.getenv("X_AUTH_TOKEN"),
-        #          csrf_token=os.getenv("X_CSRF_TOKEN")),
+        XScraper(username=os.getenv("X_USERNAME"),
+                 auth_token=os.getenv("X_AUTH_TOKEN"),
+                 csrf_token=os.getenv("X_CSRF_TOKEN")),
         
-        # DCScraper(guild_id=os.getenv("DISCORD_GUILD_ID"),
-        #           channel_id=os.getenv("DISCORD_CHANNEL_ID"),
-        #           api_key=os.getenv("DISCORD_API_KEY"))
+        DCScraper(guild_id=os.getenv("DISCORD_GUILD_ID"),
+                  channel_id=os.getenv("DISCORD_CHANNEL_ID"),
+                  api_key=os.getenv("DISCORD_API_KEY"))
     ]
 
     # Fetch the latest posts from each social media platform

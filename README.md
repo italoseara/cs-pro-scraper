@@ -1,5 +1,8 @@
 # Promocode Scraper for [cs.pro](https://cs.pro)
 
+![GitHub License](https://img.shields.io/github/license/italoseara/cs-pro-scraper)
+![GitHub Last commit](https://img.shields.io/github/last-commit/italoseara/cs-pro-scraper/main)
+
 This project is a scraper for the gambling website [cs.pro](https://cs.pro). The scraper collects promotional codes from the website's social media accounts.
 
 > [!CAUTION]
@@ -29,6 +32,7 @@ This project is a scraper for the gambling website [cs.pro](https://cs.pro). The
    ```
 
 3. Create a file in the root directory and add your social media credentials:
+
    ```env
    IG_USERNAME=your_instagram_username
    FB_USERNAME=your_facebook_username

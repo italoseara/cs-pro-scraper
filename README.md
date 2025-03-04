@@ -1,4 +1,4 @@
-# Promocode Scraper for [cs.pro](https://cs.pro)
+# Promocode Scraper
 
 ![GitHub License](https://img.shields.io/github/license/italoseara/cs-pro-scraper)
 ![GitHub Last commit](https://img.shields.io/github/last-commit/italoseara/cs-pro-scraper/main)
@@ -34,17 +34,22 @@ This project is a scraper for the gambling website [cs.pro](https://cs.pro). The
 3. Create a file in the root directory and add your social media credentials:
 
    ```env
-   IG_USERNAME=your_instagram_username
-   FB_USERNAME=your_facebook_username
+   IG_USERNAME=instagram_username
+   FB_USERNAME=facebook_username
+   X_USERNAME=x_username
 
-   X_USERNAME=your_x_username
    X_AUTH_TOKEN=your_x_auth_token
    X_CSRF_TOKEN=your_x_csrf_token
 
-   DISCORD_GUILD_ID=your_discord_guild_id
-   DISCORD_CHANNEL_ID=your_discord_channel_id
+   DISCORD_GUILD_ID=discord_guild_id
+   DISCORD_CHANNEL_ID=discord_channel_id
    DISCORD_API_KEY=your_discord_api_key
    ```
+
+> [!NOTE]
+> The `X_AUTH_TOKEN` and `X_CSRF_TOKEN` are required for the X scraper. They can be obtained by inspecting the X website and looking for the `auth_token` and `ct0` keys respectively in the Application tab in the Cookies section.
+>
+> The `DISCORD_API_KEY` can be obtained by looking for the `Authorization` header in the Network tab and the `DISCORD_GUILD_ID` and `DISCORD_CHANNEL_ID` can be obtained by activating the Developer Mode in Discord and right-clicking on the guild and channel, respectively to copy their IDs.
 
 ## Usage
 

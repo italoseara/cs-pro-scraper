@@ -1,5 +1,4 @@
 import re
-import json
 import requests
 
 from .base import BaseScraper
@@ -31,8 +30,12 @@ class IGScraper(BaseScraper):
             "User-Agent": USER_AGENT,
         }
 
+        print("Fetching latest Instagram post...", end=" ")
+        
         response = requests.get(url, headers=headers)
         response.raise_for_status()
+
+        print("Success.")
         
         latest_post = response.json()["data"]["user"]["edge_owner_to_timeline_media"]["edges"][0]["node"]
         return Post.from_instagram_post(latest_post)

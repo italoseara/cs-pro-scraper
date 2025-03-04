@@ -21,6 +21,8 @@ class FBScraper(BaseScraper):
             "User-Agent": USER_AGENT
         }
 
+        print("Fetching latest Facebook post...", end=" ")
+
         response = requests.get(url, headers=headers)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, "html.parser")
@@ -36,5 +38,7 @@ class FBScraper(BaseScraper):
         # Extract the latest post data
         result = find_in_object(info, ["result", "data", "user"])
         latest_post = result["timeline_list_feed_units"]["edges"][0]["node"]["comet_sections"]
+
+        print("Success.")
 
         return Post.from_facebook_post(latest_post)

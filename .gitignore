@@ -172,3 +172,6 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# This file contains all the expired promocodes
+promocodes.json

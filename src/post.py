@@ -10,6 +10,7 @@ class Post:
     author_url: str
     text: str
     image: Image
+    image_url: str
     url: str
 
     def __init__(self, author: str, author_url: str, text: str, image: Image, url: str) -> None:
@@ -17,6 +18,7 @@ class Post:
         self.author_url = author_url
         self.text = text
         self.url = url
+        self.image_url = image
 
         # Download and resize the image to 512x512
         self.image = download_image(image)

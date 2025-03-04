@@ -53,6 +53,8 @@ class XScraper(BaseScraper):
 
         url = f"https://x.com/i/api/graphql/Y9WM4Id6UcGFE8Z-hbnixw/UserTweets"
 
+        print("Fetching latest X post...", end=" ")
+        
         headers = {
             "authorization": X_API_KEY,
             "user-agent": USER_AGENT,
@@ -121,5 +123,7 @@ class XScraper(BaseScraper):
             "screen_name": self.username,
             "url": f"https://x.com/{self.username}",
         }
+
+        print("Success.")
 
         return Post.from_x_post(last_post)

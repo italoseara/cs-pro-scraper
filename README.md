@@ -31,7 +31,25 @@ This project is a scraper for the gambling website [cs.pro](https://cs.pro). The
    pip install -r requirements.txt
    ```
 
-3. Create a file in the root directory and add your social media credentials:
+3. Install Tesseract OCR:
+
+   - Windows:
+
+     Check the [Official Tesseract OCR Installation Guide](https://github.com/UB-Mannheim/tesseract/wiki) for Windows.
+
+   - Linux:
+
+     ```sh
+     sudo apt install tesseract-ocr
+     ```
+
+   - macOS:
+
+     ```sh
+     brew install tesseract
+     ```
+
+4. Create a file in the root directory and add your social media credentials:
 
    ```env
    IG_USERNAME=instagram_username
@@ -44,6 +62,8 @@ This project is a scraper for the gambling website [cs.pro](https://cs.pro). The
    DISCORD_GUILD_ID=discord_guild_id
    DISCORD_CHANNEL_ID=discord_channel_id
    DISCORD_API_KEY=your_discord_api_key
+
+   DISCORD_WEBHOOK_URL=your_discord_webhook_url
    ```
 
 > [!NOTE]

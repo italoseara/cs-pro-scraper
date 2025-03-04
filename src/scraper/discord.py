@@ -27,8 +27,12 @@ class DCScraper(BaseScraper):
             "limit": 1
         }
 
+        print("Fetching latest Discord post...", end=" ")
+
         response = requests.get(f"https://discord.com/api/v9/channels/{self.channel_id}/messages", headers=headers, params=params)
         response.raise_for_status()
+        
+        print("Success.")
 
         latest_post = response.json()[0]
         latest_post["guild_id"] = self.guild_id

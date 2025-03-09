@@ -1,17 +1,20 @@
 import requests
+from typing import Any
 
+from util.post import Post
 from .base import BaseScraper
-from post import Post
 
 
 class DCScraper(BaseScraper):
     """A class to scrape Discord posts from a given channel."""
 
+    app: Any
     guild_id: str
     channel_id: str
     api_key: str
 
-    def __init__(self, guild_id: str, channel_id: str, api_key: str) -> None:
+    def __init__(self, app: Any, guild_id: str, channel_id: str, api_key: str) -> None:
+        self.app = app
         self.guild_id = guild_id
         self.channel_id = channel_id
         self.api_key = api_key
@@ -27,12 +30,12 @@ class DCScraper(BaseScraper):
             "limit": 1
         }
 
-        print("Fetching latest Discord post...", end=" ")
+        self.app.log("Fetching latest Discord post...", end=" ")
 
         response = requests.get(f"https://discord.com/api/v9/channels/{self.channel_id}/messages", headers=headers, params=params)
         response.raise_for_status()
         
-        print("Success.")
+        self.app.log("Success.", prefix="")
 
         latest_post = response.json()[0]
         latest_post["guild_id"] = self.guild_id

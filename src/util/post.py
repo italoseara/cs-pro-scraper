@@ -1,6 +1,6 @@
 from PIL.Image import Image
 
-from utils import download_image
+from util.misc import download_image
 
 
 class Post:

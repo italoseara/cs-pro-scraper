@@ -1,21 +1,23 @@
 import json
 import base64
 import requests
+from typing import Any
 
 from .base import BaseScraper
-from post import Post
-from utils import USER_AGENT, X_API_KEY
+from util.post import Post
+from util.misc import USER_AGENT, X_API_KEY
 
 
 class XScraper(BaseScraper):
     """A class to scrape X posts from a given account."""
-    
+
+    app: Any
     username: str
     auth_token: str
     csrf_token: str
 
-    def __init__(self, username: str, auth_token: str, csrf_token: str) -> None:
-        super().__init__(username)
+    def __init__(self, app: Any, username: str, auth_token: str, csrf_token: str) -> None:
+        super().__init__(app, username)
 
         self.auth_token = auth_token
         self.csrf_token = csrf_token
@@ -53,7 +55,7 @@ class XScraper(BaseScraper):
 
         url = f"https://x.com/i/api/graphql/Y9WM4Id6UcGFE8Z-hbnixw/UserTweets"
 
-        print("Fetching latest X post...", end=" ")
+        self.app.log("Fetching latest X post...", end=" ")
         
         headers = {
             "authorization": X_API_KEY,
@@ -117,13 +119,18 @@ class XScraper(BaseScraper):
         response.raise_for_status()
 
         last_post = response.json()["data"]["user"]["result"]["timeline_v2"]["timeline"]["instructions"][1]["entries"][0]\
-            ["content"]["itemContent"]["tweet_results"]["result"]["legacy"]
+            ["content"]
+
+        if "itemContent" not in last_post:
+            last_post = last_post["items"][0]["item"]
+
+        last_post = last_post["itemContent"]["tweet_results"]["result"]["legacy"]
 
         last_post["user"] = {
             "screen_name": self.username,
             "url": f"https://x.com/{self.username}",
         }
 
-        print("Success.")
+        self.app.log("Success.", prefix="")
 
         return Post.from_x_post(last_post)

@@ -1,14 +1,16 @@
 import json
 import requests
 from bs4 import BeautifulSoup
+from typing import Any
 
+from util.post import Post
+from util.misc import USER_AGENT, find_in_object
 from .base import BaseScraper
-from post import Post
-from utils import USER_AGENT, find_in_object
 
 class FBScraper(BaseScraper):
     """A class to scrape facebook posts from a given account."""
-    
+
+    app: Any
     username: str
 
     def fetch_latest_post(self) -> Post:
@@ -21,7 +23,7 @@ class FBScraper(BaseScraper):
             "User-Agent": USER_AGENT
         }
 
-        print("Fetching latest Facebook post...", end=" ")
+        self.app.log("Fetching latest Facebook post...", end=" ")
 
         response = requests.get(url, headers=headers)
         response.raise_for_status()
@@ -39,6 +41,6 @@ class FBScraper(BaseScraper):
         result = find_in_object(info, ["result", "data", "user"])
         latest_post = result["timeline_list_feed_units"]["edges"][0]["node"]["comet_sections"]
 
-        print("Success.")
+        self.app.log("Success.", prefix="")
 
         return Post.from_facebook_post(latest_post)

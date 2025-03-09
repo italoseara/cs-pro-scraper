@@ -1,8 +1,9 @@
-requests
 beautifulsoup4
-pillow
-python-dotenv
-pytesseract
-opencv-python
-schedule
 discord-webhook
+opencv-python
+pillow
+pytesseract
+python-dotenv
+requests
+schedule
+sv-ttk

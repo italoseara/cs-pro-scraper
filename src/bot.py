@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from discord_webhook import DiscordWebhook, DiscordEmbed
 from typing import Any
 
-from promocode import PromocodeReader
+from util.promocode import PromocodeReader
 from util.post import Post
 from scraper import *
 

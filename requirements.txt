@@ -7,3 +7,4 @@ python-dotenv
 requests
 schedule
 sv-ttk
+seleniumbase

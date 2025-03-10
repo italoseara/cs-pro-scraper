@@ -6,7 +6,9 @@ import sv_ttk as svtk  # Only used to set the theme
 from tkinter import ttk
 from datetime import datetime
 
+import bypass
 from bot import Bot
+from ui.user import User
 from ui.entry_with_label import EntryWithlabel
 
 
@@ -15,8 +17,8 @@ class App(tk.Tk):
         super().__init__()
 
         self.title("Promocode Scraper")
-        self.geometry("800x460")
-        self.minsize(800, 460)
+        self.geometry("800x520")
+        self.minsize(800, 520)
 
         self.setup_ui()
 
@@ -43,6 +45,7 @@ class App(tk.Tk):
             "x_csrf_token": self.x_csrf_token.get(),
             "discord_api_key": self.discord_api_key.get(),
             "discord_webhook": self.discord_webhook.get(),
+            "cspro_cookie": self.cspro_cookie.get(),
             "dark_mode": self.dark_mode.get(),
             "start_with_os": self.start_with_os.get(),
             "start_minimized": self.start_minimized.get()
@@ -69,16 +72,18 @@ class App(tk.Tk):
             except json.JSONDecodeError:
                 return
 
-            self.x_auth_token.set(config["x_auth_token"])
-            self.x_csrf_token.set(config["x_csrf_token"])
-            self.discord_api_key.set(config["discord_api_key"])
-            self.discord_webhook.set(config["discord_webhook"])
+            self.x_auth_token.set(config.get("x_auth_token", ""))
+            self.x_csrf_token.set(config.get("x_csrf_token", ""))
+            self.discord_api_key.set(config.get("discord_api_key", ""))
+            self.discord_webhook.set(config.get("discord_webhook", ""))
+            self.cspro_cookie.set(config.get("cspro_cookie", ""))
 
-            self.dark_mode.set(config["dark_mode"])
-            self.start_with_os.set(config["start_with_os"])
-            self.start_minimized.set(config["start_minimized"])
+            self.dark_mode.set(config.get("dark_mode", False))
+            self.start_with_os.set(config.get("start_with_os", True))
+            self.start_minimized.set(config.get("start_minimized", True))
 
-            svtk.set_theme("dark" if config["dark_mode"] else "light")
+            svtk.set_theme("dark" if config.get("dark_mode", False) else "light")
+            self.update_user()
 
     def force_start(self) -> None:
         """Starts the scraping process in a separate thread to prevent freezing."""
@@ -98,11 +103,51 @@ class App(tk.Tk):
         right_frame = ttk.Frame(self)
         right_frame.pack(side="right", fill="both", expand=True)
 
-        self.create_log_section(right_frame)
+        top_right_frame = ttk.Frame(right_frame)
+        top_right_frame.pack(side="top", fill="both", expand=True)
+
+        self.create_user_section(top_right_frame)
+
+        bottom_right_frame = ttk.Frame(right_frame)
+        bottom_right_frame.pack(side="bottom", fill="both", expand=True)
+
+        self.create_log_section(bottom_right_frame)
+
+    def update_user(self, default: bool = False) -> None:
+        if hasattr(self, "user"):
+            self.user.destroy()
+                
+        default_avatar_url = "https://avatars.steamstatic.com/b5bd56c1aa4644a474a2e4972be27ef9e82e517e_full.jpg"
+        self.user = User(self.user_frame, "Not Found", default_avatar_url, 0.0)
+        self.user.pack(fill="both", expand=True)
+        
+        def _update_user() -> None:
+            if not self.cspro_cookie.get() or default:
+                return
+
+            cookies = [{ "name": "sfRemember", "value": self.cspro_cookie.get() }]
+            response = bypass.get("https://csgocases.com/api.php/auth", cookies=cookies)
+
+            if "success" not in response or not response["success"]:
+                return
+
+            self.user.destroy()
+            self.user = User(self.user_frame, response["user"]["nick"], response["user"]["avatar"], float(response["user"]["wallet"]))
+            self.user.pack(fill="both", expand=True)
+
+        threading.Thread(target=_update_user).start()
+
+    def create_user_section(self, frame: tk.Frame) -> None:
+        """Creates the user section."""
+
+        self.user_frame = ttk.Frame(frame)
+        self.user_frame.pack(padx=15, pady=(20, 0), fill="y", expand=True, anchor="e")
+
+        self.update_user(default=True)
 
     def create_credentials_section(self, frame: tk.Frame) -> None:
         """Creates the credentials input section."""
-        
+
         credentials_frame = ttk.LabelFrame(frame, text="Credentials")
         credentials_frame.pack(padx=10, pady=10, fill="both", expand=True)
 
@@ -117,6 +162,9 @@ class App(tk.Tk):
 
         self.discord_webhook = EntryWithlabel(credentials_frame, label="Discord Webhook URL (Optional)", secret=True)
         self.discord_webhook.pack(fill="x", padx=10, pady=5)
+
+        self.cspro_cookie = EntryWithlabel(credentials_frame, label="CS.PRO Cookie (Optional)", secret=True)
+        self.cspro_cookie.pack(fill="x", padx=10, pady=5)
 
     def create_options_section(self, frame: tk.Frame) -> None:
         """Creates the options section."""

@@ -173,6 +173,5 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-# Program configuration file
-promocodes.json
 data/
+downloaded_files/

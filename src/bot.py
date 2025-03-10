@@ -4,7 +4,8 @@ from dotenv import load_dotenv
 from discord_webhook import DiscordWebhook, DiscordEmbed
 from typing import Any
 
-from util.promocode import PromocodeReader
+import bypass
+from promocode import PromocodeReader
 from util.post import Post
 from scraper import *
 
@@ -61,8 +62,33 @@ class Bot:
         for promocode, post in new_promocodes:
             self.app.log(f"New promocode found: {promocode}")
             self.broadcast(promocode, post)
+            self.activate_promocode(promocode)
 
         self.app.log("Bot has finished running")
+
+    def activate_promocode(self, promocode: str) -> None:
+        self.app.log(f"Activating promocode `{promocode}`")
+
+        if not self.app.cspro_cookie.get():
+            self.app.log("No cookie provided. Skipping activation.")
+            return
+        
+        url = "https://csgocases.com/api.php/add_wallet_code"
+        cookies = [{ "name": "sfRemember", "value": self.app.cspro_cookie.get() }]
+
+        response = bypass.get(url, cookies=cookies, params={"code": promocode})
+        if response is None:
+            return
+
+        if "wallet" in response:
+            self.app.log(f"Promocode `{promocode}` successfully activated")
+            self.app.log(response["message"])
+            self.app.log(f"New balance: ${response['wallet']}")
+        else:
+            self.app.log(f"Could not activate promocode `{promocode}`")
+
+            if "message" in response:
+                self.app.log(response["message"])
 
     def broadcast(self, promocode: str, post: Post) -> None:
         webhook_url = self.app.discord_webhook.get()
@@ -88,8 +114,8 @@ class Bot:
             self.app.log('Could not send the webhook message')
 
     def load_expired_promocodes(self) -> list[str]:
-        if os.path.exists("promocodes.json"):
-            with open("promocodes.json", "r") as file:
+        if os.path.exists("data/promocodes.json"):
+            with open("data/promocodes.json", "r") as file:
                 return json.load(file)
         return []
 
@@ -101,28 +127,5 @@ class Bot:
 
     def update_expired_promocodes(self, expired_promocodes: list[str], new_promocodes: list[tuple]) -> None:
         expired_promocodes.extend(code for code, _ in new_promocodes)
-        with open("promocodes.json", "w") as file:
+        with open("data/promocodes.json", "w") as file:
             json.dump(expired_promocodes, file)
-
-
-# def main() -> None:
-#     bot = Bot()
-
-#     # From 8:00 to 18:00 every 30 minutes
-#     run_times = [f"{hour:02}:{minute:02}"
-#                  for hour in range(8, 18)
-#                  for minute in range(0, 60, 30)]
-
-#     for run_time in run_times:
-#         schedule.every().day.at(run_time).do(bot.run)
-
-#     bot.app.log(f"The bot is scheduled to run from {run_times[0]} to {run_times[-1]} every 30 minutes")
-
-#     bot.run()
-#     while True:
-#         schedule.run_pending()
-#         sleep(1)
-
-
-# if __name__ == '__main__':
-#     main()

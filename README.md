@@ -49,27 +49,19 @@ This project is a scraper for the gambling website [cs.pro](https://cs.pro). The
      brew install tesseract
      ```
 
-4. Create a file in the root directory and add your social media credentials:
+4. Create a file in the root directory called `.env` and add the following environment variables:
 
    ```env
-   IG_USERNAME=instagram_username
-   FB_USERNAME=facebook_username
-   X_USERNAME=x_username
-
-   X_AUTH_TOKEN=your_x_auth_token
-   X_CSRF_TOKEN=your_x_csrf_token
-
-   DISCORD_GUILD_ID=discord_guild_id
-   DISCORD_CHANNEL_ID=discord_channel_id
-   DISCORD_API_KEY=your_discord_api_key
-
-   DISCORD_WEBHOOK_URL=your_discord_webhook_url
+   IG_USERNAME=your_instagram_username
+   FB_USERNAME=your_facebook_username
+   X_USERNAME=your_x_username
+   
+   DISCORD_GUILD_ID=your_discord_guild_id
+   DISCORD_CHANNEL_ID=your_discord_channel_id
    ```
 
 > [!NOTE]
-> The `X_AUTH_TOKEN` and `X_CSRF_TOKEN` are required for the X scraper. They can be obtained by inspecting the X website and looking for the `auth_token` and `ct0` keys respectively in the Application tab in the Cookies section.
->
-> The `DISCORD_API_KEY` can be obtained by looking for the `Authorization` header in the Network tab and the `DISCORD_GUILD_ID` and `DISCORD_CHANNEL_ID` can be obtained by activating the Developer Mode in Discord and right-clicking on the guild and channel, respectively to copy their IDs.
+> The `DISCORD_GUILD_ID` and `DISCORD_CHANNEL_ID` can be obtained by activating the Developer Mode in Discord and right-clicking on the guild and channel, respectively to copy their IDs.
 
 ## Usage
 
@@ -78,6 +70,15 @@ Run the scraper:
 ```sh
 python src/main.py
 ```
+
+Fill the input fields with the required information and press the "Force Start" button.
+
+> [!NOTE]
+> The `X Auth Token` and `X CSRF Token` are required for the X scraper. They can be obtained by inspecting the X website and looking for the `auth_token` and `ct0` keys respectively in the Application tab in the Cookies section.
+>
+> The `Discord API Key` can be obtained by looking for the `Authorization` header in the Network tab of the Discord website.
+>
+> The `CS.PRO Cookie` can be obtained by logging into the [cs.pro](https://cs.pro) website with steam and copying the `sfRemember` cookie. If you dont provide this, the scraper will not try to activate the promocodes by itself.
 
 ## License
 
